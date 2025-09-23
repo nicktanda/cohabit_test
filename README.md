@@ -20,9 +20,10 @@ cd CohabitCodingTest
 bin/setup
 ```
 
-This script will:
+This script will automatically:
 - Install Ruby dependencies
-- Copy `.env.example` to `.env`
+- Auto-detect your PostgreSQL settings
+- Create and configure `.env` file with correct database credentials
 - Create and setup the database
 - Clear logs and temp files
 
@@ -30,6 +31,11 @@ After setup completes, start the server:
 ```bash
 rails server
 ```
+
+The script intelligently detects your PostgreSQL configuration by:
+- Trying to connect with your current username
+- Falling back to 'postgres' user if needed
+- Creating a pre-configured `.env` file so you don't need manual setup
 
 ### Manual Setup
 

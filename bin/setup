@@ -16,11 +16,46 @@ FileUtils.chdir APP_ROOT do
   system! "gem install bundler --conservative"
   system("bundle check") || system!("bundle install")
 
-  puts "\n== Copying environment configuration =="
+  puts "\n== Setting up environment configuration =="
   unless File.exist?(".env")
-    FileUtils.cp ".env.example", ".env"
-    puts "Created .env file from .env.example"
-    puts "Please update .env with your database credentials if needed"
+    # Auto-detect database settings
+    db_host = "localhost"
+    db_username = ENV['USER'] || "postgres"  # Use current user or postgres as fallback
+    db_password = ""
+
+    # Check if PostgreSQL is running and try to connect with common defaults
+    can_connect = false
+
+    # Try current user first
+    if system("psql -h localhost -U #{db_username} -c '\\q' 2>/dev/null")
+      can_connect = true
+      puts "✓ Can connect to PostgreSQL with username: #{db_username}"
+    elsif system("psql -h localhost -U postgres -c '\\q' 2>/dev/null")
+      # Try postgres user if current user doesn't work
+      db_username = "postgres"
+      can_connect = true
+      puts "✓ Can connect to PostgreSQL with username: postgres"
+    else
+      puts "⚠ Could not auto-detect PostgreSQL connection."
+      puts "Using default settings (username: #{db_username})"
+      puts "You may need to adjust .env after setup if database connection fails."
+    end
+
+    # Create .env file with detected settings
+    File.open(".env", "w") do |file|
+      file.puts "# Auto-generated database configuration"
+      file.puts "DATABASE_HOST=#{db_host}"
+      file.puts "DATABASE_USERNAME=#{db_username}"
+      file.puts "DATABASE_PASSWORD=#{db_password}"
+      file.puts ""
+      file.puts "# Rails configuration"
+      file.puts "RAILS_MAX_THREADS=5"
+    end
+
+    puts "Created .env file with:"
+    puts "  DATABASE_HOST=#{db_host}"
+    puts "  DATABASE_USERNAME=#{db_username}"
+    puts "  DATABASE_PASSWORD=(empty)"
   else
     puts ".env file already exists, skipping..."
   end
