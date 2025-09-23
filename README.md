@@ -10,6 +10,31 @@ A Rails application for importing and viewing user data from CSV files.
 
 ## Setup
 
+### Quick Setup (Recommended)
+
+Run the automated setup script:
+
+```bash
+git clone <repository-url>
+cd CohabitCodingTest
+bin/setup
+```
+
+This script will:
+- Install Ruby dependencies
+- Copy `.env.example` to `.env`
+- Create and setup the database
+- Clear logs and temp files
+
+After setup completes, start the server:
+```bash
+rails server
+```
+
+### Manual Setup
+
+If you prefer to set up manually:
+
 1. **Clone the repository**
    ```bash
    git clone <repository-url>
