@@ -1,0 +1,10 @@
+<%= render 'search_form' %>
+<table>
+  <%= render 'table_header' %>
+  <tbody>
+    <% @users.each do |user| %>
+      <%= render 'user_row', user: user %>
+    <% end %>
+  </tbody>
+</table>
+<%= render 'pagination', users: @users %>

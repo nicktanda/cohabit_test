@@ -1,0 +1,6 @@
+<div>Add a CSV file to import</div>
+
+<%= form_with url: csv_import_path, method: :post do |form| %>
+  <%= form.file_field :file, accept: ".csv,text/csv" %>
+  <%= form.submit "Import" %>
+<% end %>
